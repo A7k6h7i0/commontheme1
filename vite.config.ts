@@ -1,4 +1,4 @@
-import { cloudflare } from "@cloudflare/vite-plugin";
+import { nitro } from "nitro/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
@@ -6,21 +6,5 @@ import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
-  plugins: [
-    cloudflare({ viteEnvironment: { name: "ssr" } }),
-    tanstackStart(),
-    react(),
-    tailwindcss(),
-    tsconfigPaths(),
-  ],
-  optimizeDeps: {
-    exclude: [
-      "@tanstack/react-router",
-      "@tanstack/react-start",
-      "@tanstack/react-start/server-entry",
-      "@tanstack/start-client-core",
-      "@tanstack/start-plugin-core",
-      "@tanstack/start-server-core",
-    ],
-  },
+  plugins: [tanstackStart(), nitro({ preset: "vercel" }), react(), tailwindcss(), tsconfigPaths()],
 });
