@@ -1,40 +1,40 @@
 import { j as jsxRuntimeExports, r as reactExports } from "../_libs/react.mjs";
-import { C as Canvas, u as useFrame } from "../_libs/react-three__fiber.mjs";
 import { m as motion, u as useInView, a as useMotionValue, b as useTransform, c as animate } from "../_libs/framer-motion.mjs";
-import { S as Stars, F as Float, I as Icosahedron, M as MeshDistortMaterial, a as Sphere } from "../_libs/react-three__drei.mjs";
-import "../_libs/three.mjs";
-import "../_libs/zustand.mjs";
-import "../_libs/use-sync-external-store.mjs";
-import "../_libs/scheduler.mjs";
-import "../_libs/its-fine.mjs";
-import "../_libs/react-use-measure.mjs";
 import "../_libs/motion-dom.mjs";
 import "../_libs/motion-utils.mjs";
-import "../_libs/babel__runtime.mjs";
 function Cursor() {
   const dotRef = reactExports.useRef(null);
   const ringRef = reactExports.useRef(null);
   reactExports.useEffect(() => {
     if (window.matchMedia("(pointer: coarse)").matches) return;
-    let mx = 0, my = 0, rx = 0, ry = 0;
+    let mx = 0;
+    let my = 0;
+    let rx = 0;
+    let ry = 0;
+    let rafId = 0;
+    let active = true;
     const onMove = (e) => {
       mx = e.clientX;
       my = e.clientY;
-      if (dotRef.current)
+      if (dotRef.current) {
         dotRef.current.style.transform = `translate3d(${mx - 4}px, ${my - 4}px, 0)`;
+      }
     };
     const tick = () => {
+      if (!active) return;
       rx += (mx - rx) * 0.12;
       ry += (my - ry) * 0.12;
-      if (ringRef.current)
+      if (ringRef.current) {
         ringRef.current.style.transform = `translate3d(${rx - 18}px, ${ry - 18}px, 0)`;
-      requestAnimationFrame(tick);
+      }
+      rafId = requestAnimationFrame(tick);
     };
     window.addEventListener("mousemove", onMove);
-    const id = requestAnimationFrame(tick);
+    rafId = requestAnimationFrame(tick);
     return () => {
+      active = false;
       window.removeEventListener("mousemove", onMove);
-      cancelAnimationFrame(id);
+      cancelAnimationFrame(rafId);
     };
   }, []);
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
@@ -226,53 +226,6 @@ function Footer() {
     ] })
   ] }) }) });
 }
-function CoreOrb() {
-  const ref = reactExports.useRef(null);
-  useFrame((state) => {
-    if (!ref.current) return;
-    ref.current.rotation.x = state.clock.elapsedTime * 0.15;
-    ref.current.rotation.y = state.clock.elapsedTime * 0.2;
-    const { x, y } = state.pointer;
-    ref.current.position.x += (x * 0.6 - ref.current.position.x) * 0.05;
-    ref.current.position.y += (y * 0.4 - ref.current.position.y) * 0.05;
-  });
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(Float, { speed: 1.4, rotationIntensity: 0.6, floatIntensity: 1.2, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Icosahedron, { ref, args: [1.4, 4], children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-    MeshDistortMaterial,
-    {
-      color: "#7c3aed",
-      emissive: "#22d3ee",
-      emissiveIntensity: 0.6,
-      roughness: 0.15,
-      metalness: 0.9,
-      distort: 0.45,
-      speed: 1.6
-    }
-  ) }) });
-}
-function Halo() {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(Float, { speed: 0.6, rotationIntensity: 0.4, floatIntensity: 0.6, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Sphere, { args: [2.2, 64, 64], children: /* @__PURE__ */ jsxRuntimeExports.jsx("meshBasicMaterial", { color: "#ec4899", wireframe: true, transparent: true, opacity: 0.15 }) }) });
-}
-function HeroOrb() {
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
-    Canvas,
-    {
-      camera: { position: [0, 0, 5], fov: 45 },
-      dpr: [1, 2],
-      gl: { antialias: true, alpha: true },
-      children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("ambientLight", { intensity: 0.4 }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("pointLight", { position: [5, 5, 5], intensity: 2, color: "#22d3ee" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("pointLight", { position: [-5, -3, -5], intensity: 2, color: "#ec4899" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("pointLight", { position: [0, 5, -5], intensity: 1.5, color: "#7c3aed" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(reactExports.Suspense, { fallback: null, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(CoreOrb, {}),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Halo, {}),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Stars, { radius: 50, depth: 50, count: 1500, factor: 3, saturation: 1, fade: true, speed: 1 })
-        ] })
-      ]
-    }
-  );
-}
 function Particles({ count = 50, className = "" }) {
   const ref = reactExports.useRef(null);
   reactExports.useEffect(() => {
@@ -288,25 +241,26 @@ function Particles({ count = 50, className = "" }) {
     window.addEventListener("mousemove", onMove);
     return () => window.removeEventListener("mousemove", onMove);
   }, []);
-  const particles = Array.from({ length: count }, (_, i) => {
-    const size = Math.random() * 3 + 1;
+  const particles = reactExports.useMemo(() => {
     const colors = [
       "var(--neon-cyan)",
       "var(--neon-violet)",
       "var(--neon-magenta)",
       "var(--neon-blue)"
     ];
-    return {
-      id: i,
-      size,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      duration: Math.random() * 8 + 6,
-      delay: Math.random() * 6,
-      color: colors[i % colors.length],
-      depth: Math.random() * 2 + 0.5
-    };
-  });
+    return Array.from({ length: count }, (_, i) => {
+      const size = Math.random() * 2.2 + 0.8;
+      return {
+        id: i,
+        size,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        duration: Math.random() * 8 + 6,
+        delay: Math.random() * 6,
+        color: colors[i % colors.length]
+      };
+    });
+  }, [count]);
   return /* @__PURE__ */ jsxRuntimeExports.jsx(
     "div",
     {
@@ -337,7 +291,33 @@ function Particles({ count = 50, className = "" }) {
     }
   );
 }
+const HeroOrb = reactExports.lazy(
+  () => import("./HeroOrb-BZpBOINQ.mjs").then((module) => ({
+    default: module.HeroOrb
+  }))
+);
+function OrbFallback() {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative h-full w-full", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute inset-0 rounded-full bg-gradient-to-br from-[var(--neon-violet)]/25 via-transparent to-[var(--neon-magenta)]/15 blur-3xl" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute inset-[15%] rounded-full border border-white/10 bg-white/5 backdrop-blur-sm" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute inset-[28%] rounded-full bg-[var(--neon-cyan)]/20 blur-2xl" })
+  ] });
+}
 function Hero() {
+  const [showOrb, setShowOrb] = reactExports.useState(false);
+  reactExports.useEffect(() => {
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+    if (reducedMotion || coarsePointer) return;
+    const idle = "requestIdleCallback" in window ? window.requestIdleCallback(() => setShowOrb(true), { timeout: 1200 }) : window.setTimeout(() => setShowOrb(true), 800);
+    return () => {
+      if ("cancelIdleCallback" in window) {
+        window.cancelIdleCallback(idle);
+        return;
+      }
+      window.clearTimeout(idle);
+    };
+  }, []);
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "relative min-h-screen flex items-center justify-center overflow-hidden pt-32 pb-20", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute inset-0 -z-10", style: { background: "var(--gradient-aurora)" } }),
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute inset-0 -z-10 grid-bg opacity-60" }),
@@ -349,7 +329,7 @@ function Hero() {
         style: { animationDelay: "1.5s" }
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(Particles, { count: 60 }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Particles, { count: 32 }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative mx-auto max-w-7xl px-6 grid lg:grid-cols-2 gap-12 items-center", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative z-10", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs(
@@ -449,7 +429,7 @@ function Hero() {
           className: "relative h-[480px] lg:h-[560px]",
           children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute inset-0 rounded-full bg-gradient-to-br from-[var(--neon-violet)]/30 via-transparent to-[var(--neon-magenta)]/20 blur-3xl" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(HeroOrb, {}),
+            showOrb ? /* @__PURE__ */ jsxRuntimeExports.jsx(reactExports.Suspense, { fallback: /* @__PURE__ */ jsxRuntimeExports.jsx(OrbFallback, {}), children: /* @__PURE__ */ jsxRuntimeExports.jsx(HeroOrb, {}) }) : /* @__PURE__ */ jsxRuntimeExports.jsx(OrbFallback, {}),
             /* @__PURE__ */ jsxRuntimeExports.jsxs(
               motion.div,
               {
@@ -501,7 +481,10 @@ function Hero() {
 function Navbar() {
   const [scrolled, setScrolled] = reactExports.useState(false);
   reactExports.useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => {
+      const next = window.scrollY > 20;
+      setScrolled((current) => current === next ? current : next);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);

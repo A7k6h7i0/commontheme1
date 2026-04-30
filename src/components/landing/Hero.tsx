@@ -1,8 +1,46 @@
+import { lazy, Suspense, useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { HeroOrb } from "./HeroOrb";
 import { Particles } from "./Particles";
 
+const HeroOrb = lazy(() =>
+  import("./HeroOrb").then((module) => ({
+    default: module.HeroOrb,
+  })),
+);
+
+function OrbFallback() {
+  return (
+    <div className="relative h-full w-full">
+      <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[var(--neon-violet)]/25 via-transparent to-[var(--neon-magenta)]/15 blur-3xl" />
+      <div className="absolute inset-[15%] rounded-full border border-white/10 bg-white/5 backdrop-blur-sm" />
+      <div className="absolute inset-[28%] rounded-full bg-[var(--neon-cyan)]/20 blur-2xl" />
+    </div>
+  );
+}
+
 export function Hero() {
+  const [showOrb, setShowOrb] = useState(false);
+
+  useEffect(() => {
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+
+    if (reducedMotion || coarsePointer) return;
+
+    const idle =
+      "requestIdleCallback" in window
+        ? window.requestIdleCallback(() => setShowOrb(true), { timeout: 1200 })
+        : window.setTimeout(() => setShowOrb(true), 800);
+
+    return () => {
+      if ("cancelIdleCallback" in window) {
+        window.cancelIdleCallback(idle as number);
+        return;
+      }
+      window.clearTimeout(idle);
+    };
+  }, []);
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-32 pb-20">
       {/* Aurora */}
@@ -16,7 +54,7 @@ export function Hero() {
         style={{ animationDelay: "1.5s" }}
       />
 
-      <Particles count={60} />
+      <Particles count={32} />
 
       <div className="relative mx-auto max-w-7xl px-6 grid lg:grid-cols-2 gap-12 items-center">
         {/* Copy */}
@@ -105,7 +143,13 @@ export function Hero() {
           className="relative h-[480px] lg:h-[560px]"
         >
           <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[var(--neon-violet)]/30 via-transparent to-[var(--neon-magenta)]/20 blur-3xl" />
-          <HeroOrb />
+          {showOrb ? (
+            <Suspense fallback={<OrbFallback />}>
+              <HeroOrb />
+            </Suspense>
+          ) : (
+            <OrbFallback />
+          )}
 
           {/* Floating UI cards */}
           <motion.div

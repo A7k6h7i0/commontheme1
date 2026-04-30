@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 interface ParticlesProps {
   count?: number;
@@ -22,25 +22,27 @@ export function Particles({ count = 50, className = "" }: ParticlesProps) {
     return () => window.removeEventListener("mousemove", onMove);
   }, []);
 
-  const particles = Array.from({ length: count }, (_, i) => {
-    const size = Math.random() * 3 + 1;
+  const particles = useMemo(() => {
     const colors = [
       "var(--neon-cyan)",
       "var(--neon-violet)",
       "var(--neon-magenta)",
       "var(--neon-blue)",
     ];
-    return {
-      id: i,
-      size,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      duration: Math.random() * 8 + 6,
-      delay: Math.random() * 6,
-      color: colors[i % colors.length],
-      depth: Math.random() * 2 + 0.5,
-    };
-  });
+
+    return Array.from({ length: count }, (_, i) => {
+      const size = Math.random() * 2.2 + 0.8;
+      return {
+        id: i,
+        size,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        duration: Math.random() * 8 + 6,
+        delay: Math.random() * 6,
+        color: colors[i % colors.length],
+      };
+    });
+  }, [count]);
 
   return (
     <div
