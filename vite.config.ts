@@ -6,5 +6,21 @@ import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
-  plugins: [cloudflare(), tanstackStart(), react(), tailwindcss(), tsconfigPaths()],
+  plugins: [
+    cloudflare({ viteEnvironment: { name: "ssr" } }),
+    tanstackStart(),
+    react(),
+    tailwindcss(),
+    tsconfigPaths(),
+  ],
+  optimizeDeps: {
+    exclude: [
+      "@tanstack/react-router",
+      "@tanstack/react-start",
+      "@tanstack/react-start/server-entry",
+      "@tanstack/start-client-core",
+      "@tanstack/start-plugin-core",
+      "@tanstack/start-server-core",
+    ],
+  },
 });
