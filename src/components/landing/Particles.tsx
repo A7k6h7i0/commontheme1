@@ -24,7 +24,12 @@ export function Particles({ count = 50, className = "" }: ParticlesProps) {
 
   const particles = Array.from({ length: count }, (_, i) => {
     const size = Math.random() * 3 + 1;
-    const colors = ["var(--neon-cyan)", "var(--neon-violet)", "var(--neon-magenta)", "var(--neon-blue)"];
+    const colors = [
+      "var(--neon-cyan)",
+      "var(--neon-violet)",
+      "var(--neon-magenta)",
+      "var(--neon-blue)",
+    ];
     return {
       id: i,
       size,
@@ -41,7 +46,10 @@ export function Particles({ count = 50, className = "" }: ParticlesProps) {
     <div
       ref={ref}
       className={`pointer-events-none absolute inset-0 overflow-hidden ${className}`}
-      style={{ transform: "translate3d(var(--mx,0), var(--my,0), 0)", transition: "transform 0.4s ease-out" }}
+      style={{
+        transform: "translate3d(var(--mx,0), var(--my,0), 0)",
+        transition: "transform 0.4s ease-out",
+      }}
     >
       {particles.map((p) => (
         <span

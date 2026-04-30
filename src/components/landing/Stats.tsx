@@ -35,7 +35,9 @@ export function Stats() {
     <section id="stats" className="relative py-32 px-6">
       <div
         className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-px"
-        style={{ background: "linear-gradient(90deg, transparent, var(--neon-violet), transparent)" }}
+        style={{
+          background: "linear-gradient(90deg, transparent, var(--neon-violet), transparent)",
+        }}
       />
       <div className="mx-auto max-w-7xl">
         <motion.div

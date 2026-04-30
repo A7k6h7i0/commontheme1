@@ -48,8 +48,8 @@ function FeatureCard({ f, i }: { f: (typeof features)[number]; i: number }) {
     const y = e.clientY - rect.top;
     card.style.setProperty("--mx", `${x}px`);
     card.style.setProperty("--my", `${y}px`);
-    const rx = ((y / rect.height) - 0.5) * -8;
-    const ry = ((x / rect.width) - 0.5) * 8;
+    const rx = (y / rect.height - 0.5) * -8;
+    const ry = (x / rect.width - 0.5) * 8;
     card.style.setProperty("--rx", `${rx}deg`);
     card.style.setProperty("--ry", `${ry}deg`);
   };

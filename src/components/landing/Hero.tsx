@@ -11,7 +11,10 @@ export function Hero() {
 
       {/* Glow blobs */}
       <div className="absolute -z-10 top-1/4 left-1/4 h-72 w-72 rounded-full bg-[var(--neon-violet)] animate-pulse-glow" />
-      <div className="absolute -z-10 bottom-1/4 right-1/4 h-80 w-80 rounded-full bg-[var(--neon-cyan)] animate-pulse-glow" style={{ animationDelay: "1.5s" }} />
+      <div
+        className="absolute -z-10 bottom-1/4 right-1/4 h-80 w-80 rounded-full bg-[var(--neon-cyan)] animate-pulse-glow"
+        style={{ animationDelay: "1.5s" }}
+      />
 
       <Particles count={60} />
 
@@ -70,7 +73,9 @@ export function Hero() {
               href="#features"
               className="group inline-flex items-center gap-2 glass rounded-2xl px-6 py-3.5 font-medium hover:bg-white/10 transition-all duration-300"
             >
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/10">▶</span>
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/10">
+                ▶
+              </span>
               Watch the film
             </a>
           </motion.div>
@@ -84,7 +89,9 @@ export function Hero() {
             <span>TRUSTED BY</span>
             <div className="flex flex-wrap gap-5 opacity-70">
               {["VOLTRA", "AETHER", "NOVA·LABS", "HYPERION", "ECLIPSE"].map((b) => (
-                <span key={b} className="tracking-[0.2em] hover:text-foreground transition-colors">{b}</span>
+                <span key={b} className="tracking-[0.2em] hover:text-foreground transition-colors">
+                  {b}
+                </span>
               ))}
             </div>
           </motion.div>
@@ -127,7 +134,9 @@ export function Hero() {
             className="absolute bottom-12 -right-2 glass-strong rounded-2xl p-4 w-52 animate-float shadow-[var(--shadow-elevated)]"
             style={{ animationDuration: "11s", animationDelay: "1s" }}
           >
-            <div className="text-[10px] font-mono text-muted-foreground tracking-widest">LATENCY</div>
+            <div className="text-[10px] font-mono text-muted-foreground tracking-widest">
+              LATENCY
+            </div>
             <div className="text-2xl font-bold text-gradient-neon mt-1">12ms</div>
             <div className="mt-2 flex items-end gap-0.5 h-8">
               {[40, 70, 30, 90, 55, 80, 45, 95, 60, 75].map((h, i) => (
